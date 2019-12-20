@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/iwa
     docker:
-      - image: circleci/ruby:2.5-node-browsers@sha256:92adbc80f4c4b78c72f51e99f99fdbd130f32d6817f8d76c9110315a9b804186
+      - image: circleci/ruby:2.5-node-browsers
         environment:
           TZ: Asia/Tokyo
           RAILS_ENV: test
