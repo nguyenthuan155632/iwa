@@ -63,12 +63,12 @@ jobs:
       # npm install
       - restore_cache:
           keys:
-            - npm-bundle-{{ checksum "yarn-lock.json" }}
+            - npm-bundle-{{ checksum "yarn.lock" }}
       # npm install and build
       - run: |
           npm ci
       - save_cache:
-          key: npm-bundle-{{ checksum "yarn-lock.json" }}
+          key: npm-bundle-{{ checksum "yarn.lock" }}
           paths:
             - ~/.npm
 
