@@ -40,6 +40,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # Deployment
 
 # Jobs, Cron
+gem 'whenever', require: false
 
 # Authentication and Authorization
 
