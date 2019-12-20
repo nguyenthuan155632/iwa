@@ -47,6 +47,8 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 # Others
 gem 'config'
+gem 'fastimage'
+gem 'mini_magick'
 gem 'rails-patterns'
 gem 'ruby-readability', require: 'readability'
 
@@ -57,6 +59,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'brakeman'
   gem 'hirb'
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
@@ -71,6 +74,8 @@ group :test do
   gem 'faker'
   # Adds support for Capybara system testing and selenium driver1
   gem 'capybara', '>= 2.15'
+  gem 'rspec_junit_formatter'
+  gem 'rubocop-junit-formatter', require: false
   gem 'rubocop-rspec'
   gem 'selenium-webdriver'
   gem 'test-prof'

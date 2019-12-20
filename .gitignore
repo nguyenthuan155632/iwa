@@ -33,3 +33,10 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+# by editor -*-
+*~
+\#*\#
+.\#*
+/.idea/
+/.vscode

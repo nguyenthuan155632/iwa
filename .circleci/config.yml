@@ -1,0 +1,113 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/iwa
+    docker:
+      - image: circleci/ruby:2.5-node-browsers@sha256:92adbc80f4c4b78c72f51e99f99fdbd130f32d6817f8d76c9110315a9b804186
+        environment:
+          TZ: Asia/Tokyo
+          RAILS_ENV: test
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          DB_HOST: 127.0.0.1
+      - image: circleci/mysql:5.7
+        environment:
+          TZ: Asia/Tokyo
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_HOST: '%'
+      - image: redis
+    steps:
+      - checkout
+      - run: mkdir -p tmp
+      - run:
+          name: export to BASH_ENV
+          command: echo 'export PATH=$PATH:$HOME/$CIRCLE_PROJECT_REPONAME/node_modules/.bin' >> $BASH_ENV
+      - run:
+          name: install dependences
+          command: |
+            sudo apt-get update
+            sudo apt-get install libmariadbclient-dev
+      # bundle
+      - restore_cache:
+          keys:
+            - vendor-bundle-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: bundle check
+          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --without development development_ext --jobs=4 --retry=3
+      - save_cache:
+          key: vendor-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      # bootsnap
+      - restore_cache:
+          keys:
+            - bootsnap-cache-{{ .Branch }}-{{ .Revision }}
+            - bootsnap-cache-{{ .Branch }}
+            - bootsnap-cache
+      - save_cache:
+          key: bootsnap-cache-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - tmp/cache/bootsnap-load-path-cache
+            - tmp/cache/bootsnap-compile-cache
+      - save_cache:
+          key: bootsnap-cache-{{ .Branch }}
+          paths:
+            - tmp/cache/bootsnap-load-path-cache
+            - tmp/cache/bootsnap-compile-cache
+      - save_cache:
+          key: bootsnap-cache
+          paths:
+            - tmp/cache/bootsnap-load-path-cache
+            - tmp/cache/bootsnap-compile-cache
+
+      # npm install
+      - restore_cache:
+          keys:
+            - npm-bundle-{{ checksum "package-lock.json" }}
+      # npm install and build
+      - run: |
+          npm ci
+      - save_cache:
+          key: npm-bundle-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+
+      # DB setup
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+
+      # before test
+      - run:
+          name: rubocop
+          command: |
+            bundle exec rubocop --display-cop-names \
+                                --require rubocop/formatter/junit_formatter \
+                                --format RuboCop::Formatter::JUnitFormatter \
+                                --no-color \
+                                --out spec/tmp/rubocop.xml \
+                                $(bundle exec rubocop -L | circleci tests split --split-by=timings)
+      - run:
+          name: brakeman
+          command: |
+            bundle exec brakeman -w1
+      - run:
+          name: factory_lint
+          command: bin/rake factory_bot:lint
+
+      # test
+      - run:
+          name: rspec
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out spec/tmp/test-results/rspec.xml \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+          environment:
+              CIRCLE_ARTIFACTS: /tmp/test-results
+      - store_test_results:
+          path: spec/tmp
+      - store_artifacts:
+          path: spec/tmp/test-results
