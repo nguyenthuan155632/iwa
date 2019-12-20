@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.3'
+ruby '2.6.3'
 
 # Core libraries
 gem 'rails', '~> 6.0.0.rc1'
@@ -56,6 +56,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'rubocop', require: false # RuboCop is a Ruby static code analyzer and code formatter.
+  gem 'rubocop-performance'
 end
 
 group :development do
