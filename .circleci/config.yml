@@ -60,17 +60,17 @@ jobs:
             - tmp/cache/bootsnap-load-path-cache
             - tmp/cache/bootsnap-compile-cache
 
-      # npm install
+      # yarn install
       - restore_cache:
           keys:
-            - npm-bundle-{{ checksum "yarn.lock" }}
-      # npm install and build
+            - yarn-bundle-{{ checksum "yarn.lock" }}
+      # yarn install and build
       - run: |
-          npm ci
+          yarn install
       - save_cache:
-          key: npm-bundle-{{ checksum "yarn.lock" }}
+          key: yarn-bundle-{{ checksum "yarn.lock" }}
           paths:
-            - ~/.npm
+            - ~/.yarn
 
       # DB setup
       - run:
