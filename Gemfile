@@ -9,6 +9,7 @@ ruby '2.6.3'
 gem 'rails', '~> 6.0.0.rc1'
 
 # Database, ORM, Model, etc
+gem 'activerecord-import'
 gem 'sqlite3', '~> 1.4' # Use sqlite3 as the database for Active Record
 
 # Web servers
@@ -26,7 +27,7 @@ gem 'webpacker', '~> 4.0' # Transpile app-like JavaScript. Read more: https://gi
 # gem 'bcrypt', '~> 3.1.7'
 
 # API
-gem 'jbuilder', '~> 2.5'
+gem 'active_model_serializers', '~> 0.10.0'
 # Use Redis adapter to run Action Cable in production
 
 # Use Active Storage variant

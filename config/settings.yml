@@ -1,0 +1,4 @@
+routes:
+  url_options:
+    protocol: https
+    host: heroku.com

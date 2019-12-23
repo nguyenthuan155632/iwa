@@ -1,0 +1,5 @@
+routes:
+  url_options:
+    protocol: http
+    host: localhost
+    port: 3000

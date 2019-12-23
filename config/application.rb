@@ -20,5 +20,14 @@ module Iwa
 
     # load_path for calculations classes
     config.autoload_paths += Dir[Rails.root.join('app', 'services', '**', '*.{rb}')]
+
+    # load_path for serializers classes
+    config.autoload_paths += Dir[Rails.root.join('app', 'serializers', '**', '*.{rb}')]
+
+    # load_path for values classes
+    config.autoload_paths += Dir[Rails.root.join('app', 'values', '**', '*.{rb}')]
+
+    # active storage
+    config.active_storage.service = :local
   end
 end
