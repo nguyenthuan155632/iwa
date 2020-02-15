@@ -15,7 +15,7 @@
     "vue-scroll-loader": "^2.0.5",
     "vue-template-compiler": "^2.6.11",
     "vue-turbolinks": "^2.0.4",
-    "yarn": "^1.21.1"
+    "yarn": "^1.22.0"
   },
   "version": "0.1.0",
   "devDependencies": {
